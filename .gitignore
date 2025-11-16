@@ -1,0 +1,8 @@
+*.cc
+*.d
+*.o
+*.dot
+*.output
+*.err
+*.out
+levic
