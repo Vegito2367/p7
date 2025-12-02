@@ -34,6 +34,12 @@ namespace leviathan
       }
       out << opd->getMemoryLoc() << ": .quad 0" << "\n";
     }
+    for (auto pair : strings)
+    {
+      LitOpd *opd = pair.first;
+      std::string val = pair.second;
+      out << opd->valString() << ": .asciz " << val << "\n";
+    }
     // Put this directive after you write out strings
     //  so that everything is aligned to a quadword value
     //  again
@@ -68,6 +74,7 @@ namespace leviathan
     size_t offset = 16;
     for (auto pair : locals)
     {
+      
       SemSymbol *sym = pair.first;
       SymOpd *opd = pair.second;
       offset += opd->getWidth();
@@ -135,6 +142,25 @@ namespace leviathan
       out<<"addq %rax, %rbx\n";
       dst->genStoreVal(out,B);
       break;
+    case SUB64:
+      src1->genLoadVal(out,A);
+      src2->genLoadVal(out,B);
+      out<<"subq %rbx, %rax\n";
+      dst->genStoreVal(out,A);
+      break;
+    case MULT64:
+      src1->genLoadVal(out,A);
+      src2->genLoadVal(out,B);
+      out<<"imulq %rbx, %rax\n";
+      dst->genStoreVal(out,A);
+      break;
+    case DIV64:
+      src1->genLoadVal(out,A);
+      src2->genLoadVal(out,B);
+      out<<"cqto\n";
+      out<<"idivq %rbx\n";
+      dst->genStoreVal(out,A);
+      break;
     
     default:
       break;
@@ -180,6 +206,16 @@ namespace leviathan
       {
         out << mySrc->getMovOp()<< " $" << getSrc()->valString() << ", %rdi\n";
         out << "callq printInt\n";
+      }
+      else if(getSrc()->isString())
+      {
+        out << mySrc->getMovOp()<< " $" << getSrc()->valString() << ", %rdi\n";
+        out << "callq printString\n";
+      }
+      else if(getSrc()->isBool())
+      {
+        out << mySrc->getMovOp()<< " $" << getSrc()->valString() << ", %rdi\n";
+        out << "callq printBool\n";
       }
     }
   }

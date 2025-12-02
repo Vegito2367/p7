@@ -75,12 +75,12 @@ Opd *StrLitNode::flatten(Procedure *proc) {
 }
 
 Opd *TrueNode::flatten(Procedure *proc) {
-  Opd *res = new LitOpd("1", 8);
+  Opd *res = new LitOpd("1", 8, BasicType::BOOL());
   return res;
 }
 
 Opd *FalseNode::flatten(Procedure *proc) {
-  Opd *res = new LitOpd("0", 8);
+  Opd *res = new LitOpd("0", 8, BasicType::BOOL());
   return res;
 }
 
@@ -341,7 +341,7 @@ void PostIncStmtNode::to3AC(Procedure *proc) {
   if (width == 1) {
     opr = BinOp::ADD8;
   }
-  LitOpd *litOpd = new LitOpd("1", width);
+  LitOpd *litOpd = new LitOpd("1", width, BasicType::INT());
   BinOpQuad *quad = new BinOpQuad(child, opr, child, litOpd);
   proc->addQuad(quad);
 }
@@ -363,7 +363,7 @@ void PostDecStmtNode::to3AC(Procedure *proc) {
   if (width == 1) {
     opr = BinOp::SUB8;
   }
-  LitOpd *litOpd = new LitOpd("1", width);
+  LitOpd *litOpd = new LitOpd("1", width, BasicType::INT());
   BinOpQuad *quad = new BinOpQuad(child, opr, child, litOpd);
   proc->addQuad(quad);
 }

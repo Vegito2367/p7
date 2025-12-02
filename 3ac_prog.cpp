@@ -55,7 +55,7 @@ void IRProgram::gatherGlobal(SemSymbol * sym){
 
 Opd * IRProgram::makeString(std::string val){
 	std::string name = "str_" + std::to_string(str_idx++);
-	LitOpd * opd = new LitOpd(name, 8);
+	LitOpd * opd = new LitOpd(name, 8, BasicType::STRING());
 	strings[opd] = val;
 	return opd;
 }

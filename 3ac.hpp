@@ -126,9 +126,11 @@ public:
   bool isFunction() { return myIsFunction; }
   void setIsFunction(bool isFnIn) { myIsFunction = isFnIn; }
   virtual std::string getMemoryLoc() = 0;
-  virtual bool isInt() { return false; }
   virtual bool isSymbol() { return false; }
   virtual DataType *getDataType() { return nullptr; }
+  virtual bool isBool() { return false; }
+  virtual bool isString() { return false; }
+  virtual bool isInt() { return false; }
 
 private:
   size_t myWidth;
@@ -167,26 +169,25 @@ private:
 
 class LitOpd : public Opd {
 public:
-  LitOpd(std::string valIn, size_t width) : Opd(width), val(valIn) {}
+  LitOpd(std::string valIn, size_t width, const DataType *type) : Opd(width), val(valIn), myType(type) {}
   static LitOpd *buildInt(int val) {
     /*
     if (val < 256){
             return new LitOpd(std::to_string(val), 1);
     } else {
     */
-    return new LitOpd(std::to_string(val), 8);
+    return new LitOpd(std::to_string(val), 8, BasicType::INT());
     /*
     }
     */
   }
   static LitOpd *buildBool(bool val) {
     if (val) {
-      return new LitOpd("1", 1);
+      return new LitOpd("1", 1, BasicType::BOOL());
     } else {
-      return new LitOpd("0", 1);
+      return new LitOpd("0", 1, BasicType::BOOL());
     }
   }
-  virtual bool isInt() override { return true; }
   virtual std::string valString() override { return val; }
   virtual std::string locString() override {
     throw InternalError("Tried to get location of a constant");
@@ -205,9 +206,19 @@ public:
   virtual std::string getMemoryLoc() override {
     throw InternalError("Tried to get location of a constant");
   }
+  virtual bool isInt() override {
+    return myType->isInt();
+  }
+  virtual bool isBool() override {
+    return myType->isBool();
+  }
+  virtual bool isString() override {
+    return myType->isString();
+  }
 
 private:
   std::string val;
+  const DataType *myType;
 };
 
 class AuxOpd : public Opd {
