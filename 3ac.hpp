@@ -126,7 +126,9 @@ public:
   bool isFunction() { return myIsFunction; }
   void setIsFunction(bool isFnIn) { myIsFunction = isFnIn; }
   virtual std::string getMemoryLoc() = 0;
-  virtual bool isLiteral() { return false; }
+  virtual bool isInt() { return false; }
+  virtual bool isSymbol() { return false; }
+  virtual DataType *getDataType() { return nullptr; }
 
 private:
   size_t myWidth;
@@ -149,6 +151,10 @@ public:
   }
   virtual void setMemoryLoc(std::string loc) { myLoc = loc; }
   virtual std::string getMemoryLoc() override { return myLoc; }
+  virtual bool isSymbol() override { return true; }
+  virtual DataType *getDataType() override {
+    return const_cast<DataType *>(mySym->getDataType());
+  }
 
 private:
   // Private Constructor
@@ -180,7 +186,7 @@ public:
       return new LitOpd("0", 1);
     }
   }
-  virtual bool isLiteral() override { return true; }
+  virtual bool isInt() override { return true; }
   virtual std::string valString() override { return val; }
   virtual std::string locString() override {
     throw InternalError("Tried to get location of a constant");

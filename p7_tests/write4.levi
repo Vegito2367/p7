@@ -1,6 +1,9 @@
-#b:int=5;
+b:int=17;
 main : () int {
-#	a:int;
-#	a = 4;
- out << 5;
+	a:int;
+	c:int;
+	a = 4;
+	c=a+5;
+	b=b+a;
+ out << b;
 }
