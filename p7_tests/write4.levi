@@ -2,8 +2,19 @@ b:int=17;
 main : () int {
 	a:int;
 	c:int;
-	a = 4;
-	c=a+5;
-	b=b+a;
- out << b;
+	a=8;
+	c=2;
+	d:int;
+	d=a/c;
+	out<<d;
+	out<<"\n";
+	d=a*c;
+	out<< d;
+	out<<"\n";
+	d=a+c;
+	out<< d;
+	out<<"\n";
+	d=a-c;
+	out<< d;
+	out<<"\n";
 }
