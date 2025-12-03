@@ -1,0 +1,51 @@
+g:int = 5;
+
+sum8:(a:int,b:int,c:int,d:int,e:int,f:int,g:int,h:int) int {
+  s:int;
+  s = a + b + c + d + e + f + g + h;
+  return s;
+}
+
+main : () int {
+  x:int;
+  y:int;
+  rb1:bool;
+  rb2:bool;
+  rbool:bool;
+  total:int;
+
+  x = 10;
+  y = x * 2 + g;
+  v1:int;
+  v1 = y;
+  out << v1;
+  out << "\n";
+
+  total = sum8(1,2,3,4,5,6,7,8);
+  out << total;
+  out << "\n";
+
+  rb1 = true;
+  rb2 = false;
+
+  rbool = (rb1 == rb2);
+  out << rbool;
+  out << "\n";
+
+  rbool = (!rb2);
+  out << rbool;
+  out << "\n";
+
+  rbool = (rb1 or rb2);
+  out << rbool;
+  out << "\n";
+
+  rbool = (rb1 and rb2);
+  out << rbool;
+  out << "\n";
+
+  out << "Read test:\n";
+  in >> x;
+  out << x;
+  out << "\n";
+}

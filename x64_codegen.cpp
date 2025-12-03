@@ -90,6 +90,13 @@ namespace leviathan
       std::string loc = "-" + std::to_string(offset) + "(%rbp)";
       form->setMemoryLoc(loc);
     }
+    // Allocate space for address temporaries (each holds a pointer -> 8 bytes)
+    for (auto locOpd : addrOpds)
+    {
+      offset += 8; // addrOpds reserved as 8-byte pointers
+      std::string loc = "-" + std::to_string(offset) + "(%rbp)";
+      locOpd->setMemoryLoc(loc);
+    }
   }
 
   void Procedure::toX64(std::ostream &out)
@@ -213,7 +220,107 @@ namespace leviathan
       out << "setge %al\n";
       dst->genStoreVal(out, A);
       break;
+    case OR64:
+      src1->genLoadVal(out, A);
+      src2->genLoadVal(out, B);
+      out << "orq %rax, %rbx\n";
+      dst->genStoreVal(out, B);
+      break;
+    case AND64:
+      src1->genLoadVal(out, A);
+      src2->genLoadVal(out, B);
+      out << "andq %rax, %rbx\n";
+      dst->genStoreVal(out, B);
+      break;
+    // 8-bit variants
+    case ADD8:
+      src1->genLoadVal(out, A);
+      src2->genLoadVal(out, B);
+      out << "addb " << RegUtils::reg8(A) << ", " << RegUtils::reg8(B) << "\n";
+      dst->genStoreVal(out, B);
+      break;
+    case SUB8:
+      src1->genLoadVal(out, A);
+      src2->genLoadVal(out, B);
+      out << "subb " << RegUtils::reg8(B) << ", " << RegUtils::reg8(A) << "\n";
+      dst->genStoreVal(out, A);
+      break;
+    case MULT8:
+      src1->genLoadVal(out, A);
+      src2->genLoadVal(out, B);
+      out << "imulb " << RegUtils::reg8(B) << ", " << RegUtils::reg8(A) << "\n";
+      dst->genStoreVal(out, A);
+      break;
+    case DIV8:
+      // For 8-bit division, sign-extend AL into AX using cbw then idivb
+      src1->genLoadVal(out, A);
+      src2->genLoadVal(out, B);
+      out << "cbw\n"; // sign-extend AL to AX
+      out << "idivb " << RegUtils::reg8(B) << "\n";
+      dst->genStoreVal(out, A);
+      break;
+    case EQ8:
+      src1->genLoadVal(out, A);
+      src2->genLoadVal(out, B);
+      out << "cmpb " << RegUtils::reg8(B) << ", " << RegUtils::reg8(A) << "\n";
+      out << "movb $0, " << RegUtils::reg8(A) << "\n";
+      out << "sete " << RegUtils::reg8(A) << "\n";
+      dst->genStoreVal(out, A);
+      break;
+    case NEQ8:
+      src1->genLoadVal(out, A);
+      src2->genLoadVal(out, B);
+      out << "cmpb " << RegUtils::reg8(B) << ", " << RegUtils::reg8(A) << "\n";
+      out << "movb $0, " << RegUtils::reg8(A) << "\n";
+      out << "setne " << RegUtils::reg8(A) << "\n";
+      dst->genStoreVal(out, A);
+      break;
+    case LT8:
+      src1->genLoadVal(out, A);
+      src2->genLoadVal(out, B);
+      out << "cmpb " << RegUtils::reg8(B) << ", " << RegUtils::reg8(A) << "\n";
+      out << "movb $0, " << RegUtils::reg8(A) << "\n";
+      out << "setl " << RegUtils::reg8(A) << "\n";
+      dst->genStoreVal(out, A);
+      break;
+    case GT8:
+      src1->genLoadVal(out, A);
+      src2->genLoadVal(out, B);
+      out << "cmpb " << RegUtils::reg8(B) << ", " << RegUtils::reg8(A) << "\n";
+      out << "movb $0, " << RegUtils::reg8(A) << "\n";
+      out << "setg " << RegUtils::reg8(A) << "\n";
+      dst->genStoreVal(out, A);
+      break;
+    case LTE8:
+      src1->genLoadVal(out, A);
+      src2->genLoadVal(out, B);
+      out << "cmpb " << RegUtils::reg8(B) << ", " << RegUtils::reg8(A) << "\n";
+      out << "movb $0, " << RegUtils::reg8(A) << "\n";
+      out << "setle " << RegUtils::reg8(A) << "\n";
+      dst->genStoreVal(out, A);
+      break;
+    case GTE8:
+      src1->genLoadVal(out, A);
+      src2->genLoadVal(out, B);
+      out << "cmpb " << RegUtils::reg8(B) << ", " << RegUtils::reg8(A) << "\n";
+      out << "movb $0, " << RegUtils::reg8(A) << "\n";
+      out << "setge " << RegUtils::reg8(A) << "\n";
+      dst->genStoreVal(out, A);
+      break;
+    case OR8:
+      src1->genLoadVal(out, A);
+      src2->genLoadVal(out, B);
+      out << "orb " << RegUtils::reg8(A) << ", " << RegUtils::reg8(B) << "\n";
+      dst->genStoreVal(out, B);
+      break;
+    case AND8:
+      src1->genLoadVal(out, A);
+      src2->genLoadVal(out, B);
+      out << "andb " << RegUtils::reg8(A) << ", " << RegUtils::reg8(B) << "\n";
+      dst->genStoreVal(out, B);
+      break;
 //WARN: Have not done the 8 bit versions yet
+//ignore warn: just did. hope it works
     default:
       break;
     }
@@ -222,6 +329,7 @@ namespace leviathan
   void UnaryOpQuad::codegenX64(std::ostream &out)
   {
     //WARN: Have not done the 8 bit versions yet
+    //ignore warn: just did. hope it works
     switch (getOp())
     {
     case NEG64:
@@ -229,11 +337,23 @@ namespace leviathan
       out << "negq %rax\n";
       dst->genStoreVal(out, A);
       break;
+    case NEG8:
+      src->genLoadVal(out, A);
+      out << "negb " << RegUtils::reg8(A) << "\n";
+      dst->genStoreVal(out, A);
+      break;
     case NOT64:
       src->genLoadVal(out, A);
       out << "cmpq $0, %rax\n";
       out << "movq $0, %rax\n";
       out << "sete %al\n";
+      dst->genStoreVal(out, A);
+      break;
+    case NOT8:
+      src->genLoadVal(out, A);
+      out << "cmpb $0, " << RegUtils::reg8(A) << "\n";
+      out << "movb $0, " << RegUtils::reg8(A) << "\n";
+      out << "sete " << RegUtils::reg8(A) << "\n";
       dst->genStoreVal(out, A);
       break;
     default:
@@ -457,7 +577,40 @@ namespace leviathan
     out << getDst()->getMovOp() << " " << getDst()->getReg(A) << ", " << getDst()->getMemoryLoc() << "\n";
   }
 
-  void LocQuad::codegenX64(std::ostream &out) { TODO(Implement me) } //WARN: Have not understood its purpose yet
+  void LocQuad::codegenX64(std::ostream &out)
+  {
+    // LocQuad handles copying between "locations" (addresses) and values.
+    // srcIsLoc / tgtIsLoc indicate whether the src/tgt are location operands
+    // (i.e. addresses) rather than plain values.
+    // We'll use register A as the temporary register for loads/stores.
+    if (srcIsLoc && tgtIsLoc)
+    {
+      // Copy address from src location into tgt location
+      src->genLoadAddr(out, A);
+      tgt->genStoreAddr(out, A);
+      return;
+    }
+
+    if (srcIsLoc && !tgtIsLoc)
+    {
+      // Load address from src location and store the address value into tgt (as a value)
+      src->genLoadAddr(out, A);
+      tgt->genStoreVal(out, A);
+      return;
+    }
+
+    if (!srcIsLoc && tgtIsLoc)
+    {
+      // Load value from src and store it into the memory pointed-to by tgt
+      src->genLoadVal(out, A);
+      tgt->genStoreVal(out, A);
+      return;
+    }
+
+    // Neither are locations: plain value move
+    src->genLoadVal(out, A);
+    tgt->genStoreVal(out, A);
+  }
 
   void SymOpd::genLoadVal(std::ostream &out, Register reg)
   {
@@ -471,7 +624,9 @@ namespace leviathan
 
   void SymOpd::genLoadAddr(std::ostream &out, Register reg)
   {
-    TODO(Implement me if necessary)
+    // Load the address of this symbol into the given register.
+    // Use 64-bit lea since addresses are 8 bytes.
+    out << "leaq " << getMemoryLoc() << ", " << RegUtils::reg64(reg) << "\n";
   }
 
   void AuxOpd::genLoadVal(std::ostream &out, Register reg)
@@ -490,19 +645,39 @@ namespace leviathan
 
   void AddrOpd::genStoreVal(std::ostream &out, Register reg)
   {
-    TODO(Implement me)
+    // Store the value in <reg> into the memory pointed to by this AddrOpd.
+    // Load the pointer from this AddrOpd's slot, then store the value.
+    std::string target = RegUtils::reg64(reg);
+    std::string scratch = RegUtils::reg64(A);
+    if (reg == A) { scratch = RegUtils::reg64(B); }
+    out << "movq " << getMemoryLoc() << ", " << scratch << "\n";
+    out << "movq " << target << ", (" << scratch << ")\n";
   }
 
-  void AddrOpd::genLoadVal(std::ostream &out, Register reg) { TODO(Implement me) }
+  void AddrOpd::genLoadVal(std::ostream &out, Register reg)
+  {
+    // Load the value pointed to by the pointer stored in this AddrOpd's slot
+    // into the given register. Use a scratch register to avoid clobbering the
+    // destination if they are the same.
+    std::string target = RegUtils::reg64(reg);
+    std::string scratch = RegUtils::reg64(A);
+    if (reg == A) { scratch = RegUtils::reg64(B); }
+    // Load the pointer from the addr slot into scratch
+    out << "movq " << getMemoryLoc() << ", " << scratch << "\n";
+    // Dereference the pointer and load the pointed-to value into target
+    out << "movq (" << scratch << "), " << target << "\n";
+  }
 
   void AddrOpd::genStoreAddr(std::ostream &out, Register reg)
   {
-    TODO(Implement me)
+    // Store the address value in <reg> into this AddrOpd's memory slot.
+    out << "movq " << RegUtils::reg64(reg) << ", " << getMemoryLoc() << "\n";
   }
 
   void AddrOpd::genLoadAddr(std::ostream &out, Register reg)
   {
-    TODO(Implement me)
+    // Load the pointer value stored in this AddrOpd's slot into reg.
+    out << "movq " << getMemoryLoc() << ", " << RegUtils::reg64(reg) << "\n";
   }
 
   void LitOpd::genLoadVal(std::ostream &out, Register reg)
