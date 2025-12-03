@@ -1,8 +1,6 @@
 .data 
 global_b: .quad 0
-str_3: .asciz "\n"
-str_2: .asciz "\n"
-str_1: .asciz "\n"
+str_1: .asciz "gay sex\n"
 str_0: .asciz "\n"
 .align 8
 .section .note.GNU-stack,"",@progbits
@@ -19,60 +17,89 @@ callq fun_main
 lbl_0: addq $0, %rsp
 popq %rbp
 retq
-fun_main: pushq %rbp
+fun_f1: pushq %rbp
 movq %rsp, %rbp
 addq $16,%rbp
 subq $64, %rsp
-#Fn body main
-movq $8, %rax
+#Fn body f1
+movq %rdi, -48(%rbp)
+movq %rsi, -56(%rbp)
+movq %rdx, -64(%rbp)
+movq %rcx, -72(%rbp)
+movq $7, %rax
+movq $2, %rbx
+imulq %rbx, %rax
 movq %rax, -24(%rbp)
-movq $2, %rax
-movq %rax, -32(%rbp)
 movq -24(%rbp), %rax
-movq -32(%rbp), %rbx
-cqto
-idivq %rbx
 movq %rax, -48(%rbp)
+movq $2, %rax
+movq -64(%rbp), %rbx
+imulq %rbx, %rax
+movq %rax, -32(%rbp)
 movq -48(%rbp), %rax
-movq %rax, -40(%rbp)
-movq -40(%rbp), %rdi
+movq -32(%rbp), %rbx
+addq %rax, %rbx
+movq %rbx, -40(%rbp)
+movq -40(%rbp), %rax
+movq %rax, -56(%rbp)
+movq -56(%rbp), %rdi
 callq printInt
 movq $str_0, %rdi
 callq printString
-movq -24(%rbp), %rax
-movq -32(%rbp), %rbx
-imulq %rbx, %rax
-movq %rax, -56(%rbp)
-movq -56(%rbp), %rax
-movq %rax, -40(%rbp)
-movq -40(%rbp), %rdi
-callq printInt
+# IfzQuad
+movq -72(%rbp), %rcx
+cmpq $0, %rcx
+je lbl_2
+# End IfzQuad
 movq $str_1, %rdi
 callq printString
-movq -24(%rbp), %rax
-movq -32(%rbp), %rbx
-addq %rax, %rbx
-movq %rbx, -64(%rbp)
-movq -64(%rbp), %rax
-movq %rax, -40(%rbp)
-movq -40(%rbp), %rdi
-callq printInt
-movq $str_2, %rdi
-callq printString
-movq -24(%rbp), %rax
-movq -32(%rbp), %rbx
-subq %rbx, %rax
-movq %rax, -72(%rbp)
-movq -72(%rbp), %rax
-movq %rax, -40(%rbp)
-movq -40(%rbp), %rdi
-callq printInt
-movq $str_3, %rdi
-callq printString
-#Fn epilogue main
+lbl_2: nop
+#Fn epilogue f1
 lbl_1: addq $64, %rsp
 popq %rbp
 retq
+fun_main: pushq %rbp
+movq %rsp, %rbp
+addq $16,%rbp
+subq $32, %rsp
+#Fn body main
+movq $5, %rax
+movq %rax, -32(%rbp)
+lbl_4: nop
+movq -32(%rbp), %rax
+movq $10, %rbx
+cmpq %rbx, %rax
+movq $0, %rax
+setl %al
+movq %rax, -40(%rbp)
+# IfzQuad
+movq -40(%rbp), %rcx
+cmpq $0, %rcx
+je lbl_5
+# End IfzQuad
+movq -32(%rbp), %rax
+movq $1, %rbx
+addq %rax, %rbx
+movq %rbx, -32(%rbp)
+jmp lbl_4
+lbl_5: nop
+movq -32(%rbp), %rax
+movq $0, %rbx
+cmpq %rbx, %rax
+movq $0, %rax
+setg %al
+movq %rax, -48(%rbp)
+movq -32(%rbp), %rdi
+movq $0, %rsi
+movq $10, %rdx
+movq -48(%rbp), %rcx
+callq fun_f1
+movq -32(%rbp), %rdi
+callq printInt
+#Fn epilogue main
+lbl_3: addq $32, %rsp
+popq %rbp
+retq
 movq $60, %rax
-movq $7, %rdi
+movq $0, %rdi
 syscall

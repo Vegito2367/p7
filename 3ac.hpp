@@ -131,6 +131,7 @@ public:
   virtual bool isBool() { return false; }
   virtual bool isString() { return false; }
   virtual bool isInt() { return false; }
+  virtual bool isLiteral() { return false; }
 
 private:
   size_t myWidth;
@@ -215,6 +216,9 @@ public:
   virtual bool isString() override {
     return myType->isString();
   }
+  virtual bool isLiteral() override {
+    return true;
+  }
 
 private:
   std::string val;
@@ -273,8 +277,8 @@ enum BinOp {
   GT64,
   LTE64,
   GTE64,
-  OR64,
-  AND64,
+  OR64,//Not done
+  AND64,//not done
   ADD8,
   SUB8,
   DIV8,
@@ -288,7 +292,7 @@ enum BinOp {
   OR8,
   AND8
 };
-enum UnaryOp { NEG64, NEG8, NOT64, NOT8 };
+enum UnaryOp { NEG64, NEG8, NOT64, NOT8 }; //Not implemented the 8 bit versions yet
 
 class Quad {
 public:
@@ -434,7 +438,7 @@ public:
   CallQuad(SemSymbol *calleeIn);
   std::string repr() override;
   void codegenX64(std::ostream &out) override;
-
+  Opd * getCalleeOpd() { return calleeOpd; }
 private:
   Opd *calleeOpd;
   SemSymbol *sym;
@@ -481,7 +485,7 @@ public:
   std::string repr() override;
   void codegenX64(std::ostream &out) override;
   Opd *getDst() { return opd; }
-
+  size_t getIndex() { return index; }
 private:
   size_t index;
   Opd *opd;
