@@ -1,1 +1,10 @@
-9
+Function call begins
+34
+if condition inside function works!
+End of first part of function test - Now testing stack variables
+25
+26
+Function call ends
+10
+Function return value:34
+User read value:69

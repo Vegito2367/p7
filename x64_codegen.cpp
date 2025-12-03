@@ -29,7 +29,6 @@ namespace leviathan
       if (opd->isFunction() || !sym->getDataType()->asBasic() ||
           sym->getName() == "out" || sym->getName() == "in")
       {
-        // std::cout << "Skipping function global " << sym->getName() << "\n";
         continue;
       }
       out << opd->getMemoryLoc() << ": .quad 0" << "\n";
@@ -214,7 +213,7 @@ namespace leviathan
       out << "setge %al\n";
       dst->genStoreVal(out, A);
       break;
-
+//WARN: Have not done the 8 bit versions yet
     default:
       break;
     }
@@ -222,6 +221,7 @@ namespace leviathan
 
   void UnaryOpQuad::codegenX64(std::ostream &out)
   {
+    //WARN: Have not done the 8 bit versions yet
     switch (getOp())
     {
     case NEG64:
@@ -247,11 +247,26 @@ namespace leviathan
     dst->genStoreVal(out, A);
   }
 
-  void ReadQuad::codegenX64(std::ostream &out) { TODO(Implement me) }
+  void ReadQuad::codegenX64(std::ostream &out)
+  {
+    if (getDst()->isSymbol())
+    {
+      DataType const *dstType = getType();
+      if (dstType->isInt())
+      {
+        out << "callq getInt\n";
+        out << myDst->getMovOp() << " %rax, " << getDst()->getMemoryLoc() << "\n";
+      }
+      if (dstType->isBool())
+      {
+        out << "callq getBool\n";
+        out << myDst->getMovOp() << " %rax, " << getDst()->getMemoryLoc() << "\n";
+      }
+    }
+  }
 
   void WriteQuad::codegenX64(std::ostream &out)
   {
-    // std::cout << mySrc->locString() << " and " << myDst->locString() << "\n";
     if ((getDst()->valString() == "[out]"))
     {
       if (getSrc()->isSymbol())
@@ -309,7 +324,8 @@ namespace leviathan
   {
     out << "callq fun_" << sym->getName() << "\n";
     int stackneeded = (numArgs > 6) ? (numArgs - 6) * 8 : 0;
-    if (stackneeded > 0){
+    if (stackneeded > 0)
+    {
       out << "addq $" << stackneeded << ", %rsp\n";
     }
   }
@@ -340,50 +356,50 @@ namespace leviathan
     case 1:
       if (getSrc()->isLiteral())
       {
-        out << getSrc()->getMovOp() << " $" << getSrc()->valString() << ", %rdi\n";
+        out << getSrc()->getMovOp() << " $" << getSrc()->valString() << ", " << getSrc()->getReg(DI) << "\n";
         break;
       }
-      out << getSrc()->getMovOp() << " " << getSrc()->getMemoryLoc() << ", %rdi\n";
+      out << getSrc()->getMovOp() << " " << getSrc()->getMemoryLoc() << ", " << getSrc()->getReg(DI) << "\n";
       break;
     case 2:
       if (getSrc()->isLiteral())
       {
-        out << getSrc()->getMovOp() << " $" << getSrc()->valString() << ", %rsi\n";
+        out << getSrc()->getMovOp() << " $" << getSrc()->valString() << ", " << getSrc()->getReg(SI) << "\n";
         break;
       }
-      out << getSrc()->getMovOp() << " " << getSrc()->getMemoryLoc() << ", %rsi\n";
+      out << getSrc()->getMovOp() << " " << getSrc()->getMemoryLoc() << ", " << getSrc()->getReg(SI) << "\n";
       break;
     case 3:
       if (getSrc()->isLiteral())
       {
-        out << getSrc()->getMovOp() << " $" << getSrc()->valString() << ", %rdx\n";
+        out << getSrc()->getMovOp() << " $" << getSrc()->valString() << ", " << getSrc()->getReg(DX) << "\n";
         break;
       }
-      out << getSrc()->getMovOp() << " " << getSrc()->getMemoryLoc() << ", %rdx\n";
+      out << getSrc()->getMovOp() << " " << getSrc()->getMemoryLoc() << ", " << getSrc()->getReg(DX) << "\n";
       break;
     case 4:
       if (getSrc()->isLiteral())
       {
-        out << getSrc()->getMovOp() << " $" << getSrc()->valString() << ", %rcx\n";
+        out << getSrc()->getMovOp() << " $" << getSrc()->valString() << ", " << getSrc()->getReg(CX) << "\n";
         break;
       }
-      out << getSrc()->getMovOp() << " " << getSrc()->getMemoryLoc() << ", %rcx\n";
+      out << getSrc()->getMovOp() << " " << getSrc()->getMemoryLoc() << ", " << getSrc()->getReg(CX) << "\n";
       break;
     case 5:
       if (getSrc()->isLiteral())
       {
-        out << getSrc()->getMovOp() << " $" << getSrc()->valString() << ", %r8\n";
+        out << getSrc()->getMovOp() << " $" << getSrc()->valString() << ", " << getSrc()->getReg(R8) << "\n";
         break;
       }
-      out << getSrc()->getMovOp() << " " << getSrc()->getMemoryLoc() << ", %r8\n";
+      out << getSrc()->getMovOp() << " " << getSrc()->getMemoryLoc() << ", " << getSrc()->getReg(R8) << "\n";
       break;
     case 6:
       if (getSrc()->isLiteral())
       {
-        out << getSrc()->getMovOp() << " $" << getSrc()->valString() << ", %r9\n";
+        out << getSrc()->getMovOp() << " $" << getSrc()->valString() << ", " << getSrc()->getReg(R9) << "\n";
         break;
       }
-      out << getSrc()->getMovOp() << " " << getSrc()->getMemoryLoc() << ", %r9\n";
+      out << getSrc()->getMovOp() << " " << getSrc()->getMemoryLoc() << ", " << getSrc()->getReg(R9) << "\n";
       break;
 
     default:
@@ -398,37 +414,50 @@ namespace leviathan
     switch (getIndex())
     {
     case 1:
-      out << opd->getMovOp() << " %rdi, " << opd->getMemoryLoc() << "\n";
+      out << opd->getMovOp() << " " << opd->getReg(DI) << ", " << opd->getMemoryLoc() << "\n";
       break;
     case 2:
-      out << opd->getMovOp() << " %rsi, " << opd->getMemoryLoc() << "\n";
+      out << opd->getMovOp() << " " << opd->getReg(SI) << ", " << opd->getMemoryLoc() << "\n";
       break;
     case 3:
-      out << opd->getMovOp() << " %rdx, " << opd->getMemoryLoc() << "\n";
+      out << opd->getMovOp() << " " << opd->getReg(DX) << ", " << opd->getMemoryLoc() << "\n";
       break;
     case 4:
-      out << opd->getMovOp() << " %rcx, " << opd->getMemoryLoc() << "\n";
+      out << opd->getMovOp() << " " << opd->getReg(CX) << ", " << opd->getMemoryLoc() << "\n";
       break;
     case 5:
-      out << opd->getMovOp() << " %r8, " << opd->getMemoryLoc() << "\n";
+      out << opd->getMovOp() << " " << opd->getReg(R8) << ", " << opd->getMemoryLoc() << "\n";
       break;
     case 6:
-      out << opd->getMovOp() << " %r9, " << opd->getMemoryLoc() << "\n";
+      out << opd->getMovOp() << " " << opd->getReg(R9) << ", " << opd->getMemoryLoc() << "\n";
       break;
 
     default:
-    out<<opd->getMovOp()<<" "<< (8 * (numArgs - getIndex())) << "(%rbp), %rbx\n"; 
-    out<<opd->getMovOp()<<" %rbx, " << opd->getMemoryLoc() << "\n";
-
+      out << opd->getMovOp() << " " << (8 * (numArgs - getIndex())) << "(%rbp), " << opd->getReg(B) << "\n";
+      out << opd->getMovOp() << " " << opd->getReg(B) << ", " << opd->getMemoryLoc() << "\n";
       break;
     }
   }
 
-  void SetRetQuad::codegenX64(std::ostream &out) { TODO(Implement me) }
+  void SetRetQuad::codegenX64(std::ostream &out)
+  {
+    getSrc()->genLoadVal(out, A);
+    if (getSrc()->isLiteral())
+    {
+      out << getSrc()->getMovOp() << " $" << getSrc()->valString() << ", " << getSrc()->getReg(A) << "\n";
+    }
+    else
+    {
+      out << getSrc()->getMovOp() << " " << getSrc()->getMemoryLoc() << ", " << getSrc()->getReg(A) << "\n";
+    }
+  }
 
-  void GetRetQuad::codegenX64(std::ostream &out) { TODO(Implement me) }
+  void GetRetQuad::codegenX64(std::ostream &out)
+  {
+    out << getDst()->getMovOp() << " " << getDst()->getReg(A) << ", " << getDst()->getMemoryLoc() << "\n";
+  }
 
-  void LocQuad::codegenX64(std::ostream &out) { TODO(Implement me) }
+  void LocQuad::codegenX64(std::ostream &out) { TODO(Implement me) } //WARN: Have not understood its purpose yet
 
   void SymOpd::genLoadVal(std::ostream &out, Register reg)
   {
@@ -454,7 +483,10 @@ namespace leviathan
   {
     out << getMovOp() << " " << getReg(reg) << ", " << getMemoryLoc() << "\n";
   }
-  void AuxOpd::genLoadAddr(std::ostream &out, Register reg) { TODO(Implement me) }
+  void AuxOpd::genLoadAddr(std::ostream &out, Register reg)
+  {
+    out << "leaq " << getMemoryLoc() << ", " << getReg(reg) << "\n"; //WARN: Not sure how to test this
+  }
 
   void AddrOpd::genStoreVal(std::ostream &out, Register reg)
   {

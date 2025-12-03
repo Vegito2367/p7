@@ -1,18 +1,19 @@
 b:int=17;
 
-f1: (m:int, a:int, k:int, b:bool, c:int, g:bool, mm:int,mm2:int) void {
+f1: (m:int, a:int, k:int, b:bool, c:int, g:bool, mm:int,mm2:int) int {
 	m=7*2;
 	a = m+2 * k;
 	out<<a;	
 	out<<"\n";
 	if(b){
-		out<<"gay sex\n";
+		out<<"if condition inside function works!\n";
 	}
 	out<<"End of first part of function test - Now testing stack variables\n";
 	out<<mm;
 	out<<"\n";
 	out<<mm2;
 	out<<"\n";
+	return a;
 }
 main : () int {
 	a:int;
@@ -21,9 +22,18 @@ main : () int {
 		c++;
 	}
 	out<<"Function call begins\n";
-	f1(c,0,10,c>0,0,true,25,26);
+	fd:int;
+	fd = f1(c,0,10,c>0,0,true,25,26);
 	out<<"Function call ends\n";
 	out<<c;
+	out<<"\n";	
+	out<<"Function return value:";
+	out<<fd;
+	out<<"\n";	
+	in>>fd;
+	out<<"User read value:";
+	out<<fd;
+	out<<"\n";
 }
 
 

@@ -27,7 +27,7 @@ private:
   std::string name;
 };
 
-enum Register { A, B, C, D, DI, SI };
+enum Register { A, B, C, D, DI, SI, DX, CX, R8, R9 };
 
 class RegUtils {
 public:
@@ -45,6 +45,14 @@ public:
       return "di";
     case SI:
       return "si";
+    case DX:
+      return "dx";
+    case CX:
+      return "cx";
+    case R8:
+      return "r8";
+    case R9:
+      return "r9";
     }
   }
 
@@ -62,7 +70,16 @@ public:
       return "%rdi";
     case SI:
       return "%rsi";
+    case DX:
+      return "%rdx";
+    case CX:
+      return "%rcx";
+    case R8:
+      return "%r8";
+    case R9:
+      return "%r9";
     }
+
     throw new InternalError("no such register");
   }
 
@@ -80,7 +97,16 @@ public:
       return "%dil";
     case SI:
       return "%sil";
+    case DX:
+      return "%dl";
+    case CX:
+      return "%cl";
+    case R8:
+      return "%r8l";
+    case R9:
+      return "%r9l";
     }
+
     throw new InternalError("no such register");
   }
 };
