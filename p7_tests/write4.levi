@@ -1,6 +1,6 @@
 b:int=17;
 
-f1: (m:int, a:int, k:int, b:bool) void {
+f1: (m:int, a:int, k:int, b:bool, c:int, g:bool, mm:int,mm2:int) void {
 	m=7*2;
 	a = m+2 * k;
 	out<<a;	
@@ -8,6 +8,11 @@ f1: (m:int, a:int, k:int, b:bool) void {
 	if(b){
 		out<<"gay sex\n";
 	}
+	out<<"End of first part of function test - Now testing stack variables\n";
+	out<<mm;
+	out<<"\n";
+	out<<mm2;
+	out<<"\n";
 }
 main : () int {
 	a:int;
@@ -15,7 +20,9 @@ main : () int {
 	while(c<10){
 		c++;
 	}
-	f1(c,0,10,c>0);
+	out<<"Function call begins\n";
+	f1(c,0,10,c>0,0,true,25,26);
+	out<<"Function call ends\n";
 	out<<c;
 }
 

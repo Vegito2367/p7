@@ -53,7 +53,7 @@ namespace leviathan
   {
     allocGlobals();
     datagenX64(out);
-    
+
     getInitProc()->toX64(out);
     // Iterate over each procedure and codegen it
     for (Procedure *proc : *procs)
@@ -65,8 +65,6 @@ namespace leviathan
     out << "movq $60, %rax\n";
     out << "movq $0, %rdi\n";
     out << "syscall\n";
-    
-    
   }
 
   void Procedure::allocLocals()
@@ -74,7 +72,7 @@ namespace leviathan
     size_t offset = 16;
     for (auto pair : locals)
     {
-      
+
       SemSymbol *sym = pair.first;
       SymOpd *opd = pair.second;
       offset += opd->getWidth();
@@ -87,7 +85,7 @@ namespace leviathan
       std::string loc = "-" + std::to_string(offset) + "(%rbp)";
       tmp->setMemoryLoc(loc);
     }
-    for (auto form: formals)
+    for (auto form : formals)
     {
       offset += form->getWidth();
       std::string loc = "-" + std::to_string(offset) + "(%rbp)";
@@ -138,110 +136,110 @@ namespace leviathan
     }
   }
 
-  void BinOpQuad::codegenX64(std::ostream &out) { 
-    
+  void BinOpQuad::codegenX64(std::ostream &out)
+  {
+
     switch (getOp())
     {
     case ADD64:
-      src1->genLoadVal(out,A);
-      src2->genLoadVal(out,B);
-      out<<"addq %rax, %rbx\n";
-      dst->genStoreVal(out,B);
+      src1->genLoadVal(out, A);
+      src2->genLoadVal(out, B);
+      out << "addq %rax, %rbx\n";
+      dst->genStoreVal(out, B);
       break;
     case SUB64:
-      src1->genLoadVal(out,A);
-      src2->genLoadVal(out,B);
-      out<<"subq %rbx, %rax\n";
-      dst->genStoreVal(out,A);
+      src1->genLoadVal(out, A);
+      src2->genLoadVal(out, B);
+      out << "subq %rbx, %rax\n";
+      dst->genStoreVal(out, A);
       break;
     case MULT64:
-      src1->genLoadVal(out,A);
-      src2->genLoadVal(out,B);
-      out<<"imulq %rbx, %rax\n";
-      dst->genStoreVal(out,A);
+      src1->genLoadVal(out, A);
+      src2->genLoadVal(out, B);
+      out << "imulq %rbx, %rax\n";
+      dst->genStoreVal(out, A);
       break;
     case DIV64:
-      src1->genLoadVal(out,A);
-      src2->genLoadVal(out,B);
-      out<<"cqto\n";
-      out<<"idivq %rbx\n";
-      dst->genStoreVal(out,A);
+      src1->genLoadVal(out, A);
+      src2->genLoadVal(out, B);
+      out << "cqto\n";
+      out << "idivq %rbx\n";
+      dst->genStoreVal(out, A);
       break;
     case EQ64:
-      src1->genLoadVal(out,A);
-      src2->genLoadVal(out,B);
-      out<<"cmpq %rbx, %rax\n";
-      out<<"movq $0, %rax\n";
-      out<<"sete %al\n";
-      dst->genStoreVal(out,A);
+      src1->genLoadVal(out, A);
+      src2->genLoadVal(out, B);
+      out << "cmpq %rbx, %rax\n";
+      out << "movq $0, %rax\n";
+      out << "sete %al\n";
+      dst->genStoreVal(out, A);
       break;
     case NEQ64:
-      src1->genLoadVal(out,A);
-      src2->genLoadVal(out,B);
-      out<<"cmpq %rbx, %rax\n";
-      out<<"movq $0, %rax\n";
-      out<<"setne %al\n";
-      dst->genStoreVal(out,A);
+      src1->genLoadVal(out, A);
+      src2->genLoadVal(out, B);
+      out << "cmpq %rbx, %rax\n";
+      out << "movq $0, %rax\n";
+      out << "setne %al\n";
+      dst->genStoreVal(out, A);
       break;
     case LT64:
-      src1->genLoadVal(out,A);
-      src2->genLoadVal(out,B);
-      out<<"cmpq %rbx, %rax\n";
-      out<<"movq $0, %rax\n";
-      out<<"setl %al\n";
-      dst->genStoreVal(out,A);
+      src1->genLoadVal(out, A);
+      src2->genLoadVal(out, B);
+      out << "cmpq %rbx, %rax\n";
+      out << "movq $0, %rax\n";
+      out << "setl %al\n";
+      dst->genStoreVal(out, A);
       break;
     case GT64:
-      src1->genLoadVal(out,A);
-      src2->genLoadVal(out,B);
-      out<<"cmpq %rbx, %rax\n";
-      out<<"movq $0, %rax\n";
-      out<<"setg %al\n";
-      dst->genStoreVal(out,A);
+      src1->genLoadVal(out, A);
+      src2->genLoadVal(out, B);
+      out << "cmpq %rbx, %rax\n";
+      out << "movq $0, %rax\n";
+      out << "setg %al\n";
+      dst->genStoreVal(out, A);
       break;
     case LTE64:
-      src1->genLoadVal(out,A);
-      src2->genLoadVal(out,B);
-      out<<"cmpq %rbx, %rax\n";
-      out<<"movq $0, %rax\n";
-      out<<"setle %al\n";
-      dst->genStoreVal(out,A);
+      src1->genLoadVal(out, A);
+      src2->genLoadVal(out, B);
+      out << "cmpq %rbx, %rax\n";
+      out << "movq $0, %rax\n";
+      out << "setle %al\n";
+      dst->genStoreVal(out, A);
       break;
     case GTE64:
-      src1->genLoadVal(out,A);
-      src2->genLoadVal(out,B);
-      out<<"cmpq %rbx, %rax\n";
-      out<<"movq $0, %rax\n";
-      out<<"setge %al\n";
-      dst->genStoreVal(out,A);
+      src1->genLoadVal(out, A);
+      src2->genLoadVal(out, B);
+      out << "cmpq %rbx, %rax\n";
+      out << "movq $0, %rax\n";
+      out << "setge %al\n";
+      dst->genStoreVal(out, A);
       break;
 
-    
     default:
       break;
     }
-  
   }
 
-  void UnaryOpQuad::codegenX64(std::ostream &out) { 
+  void UnaryOpQuad::codegenX64(std::ostream &out)
+  {
     switch (getOp())
     {
     case NEG64:
-      src->genLoadVal(out,A);
-      out<<"negq %rax\n";
-      dst->genStoreVal(out,A);
+      src->genLoadVal(out, A);
+      out << "negq %rax\n";
+      dst->genStoreVal(out, A);
       break;
     case NOT64:
-      src->genLoadVal(out,A);
-      out<<"cmpq $0, %rax\n";
-      out<<"movq $0, %rax\n";
-      out<<"sete %al\n";
-      dst->genStoreVal(out,A);
+      src->genLoadVal(out, A);
+      out << "cmpq $0, %rax\n";
+      out << "movq $0, %rax\n";
+      out << "sete %al\n";
+      dst->genStoreVal(out, A);
       break;
     default:
       break;
     }
-   }
+  }
 
   void AssignQuad::codegenX64(std::ostream &out)
   {
@@ -261,33 +259,33 @@ namespace leviathan
         DataType const *srcType = getSrc()->getDataType();
         if (srcType->isInt())
         {
-          out << mySrc->getMovOp()<< " " << getSrc()->getMemoryLoc() << ", %rdi\n";
-          out << "callq printInt\n"; 
+          out << mySrc->getMovOp() << " " << getSrc()->getMemoryLoc() << ", %rdi\n";
+          out << "callq printInt\n";
         }
-        if(srcType->isBool())
+        if (srcType->isBool())
         {
-          out << mySrc->getMovOp()<< " " << getSrc()->getMemoryLoc() << ", %rdi\n";
-          out << "callq printBool\n"; 
+          out << mySrc->getMovOp() << " " << getSrc()->getMemoryLoc() << ", %rdi\n";
+          out << "callq printBool\n";
         }
-        if(srcType->isString())
+        if (srcType->isString())
         {
-          out << mySrc->getMovOp()<< " " << getSrc()->getMemoryLoc() << ", %rdi\n";
-          out << "callq printString\n"; 
+          out << mySrc->getMovOp() << " " << getSrc()->getMemoryLoc() << ", %rdi\n";
+          out << "callq printString\n";
         }
       }
       else if (getSrc()->isInt())
       {
-        out << mySrc->getMovOp()<< " $" << getSrc()->valString() << ", %rdi\n";
+        out << mySrc->getMovOp() << " $" << getSrc()->valString() << ", %rdi\n";
         out << "callq printInt\n";
       }
-      else if(getSrc()->isString())
+      else if (getSrc()->isString())
       {
-        out << mySrc->getMovOp()<< " $" << getSrc()->valString() << ", %rdi\n";
+        out << mySrc->getMovOp() << " $" << getSrc()->valString() << ", %rdi\n";
         out << "callq printString\n";
       }
-      else if(getSrc()->isBool())
+      else if (getSrc()->isBool())
       {
-        out << mySrc->getMovOp()<< " $" << getSrc()->valString() << ", %rdi\n";
+        out << mySrc->getMovOp() << " $" << getSrc()->valString() << ", %rdi\n";
         out << "callq printBool\n";
       }
     }
@@ -298,18 +296,22 @@ namespace leviathan
     out << "jmp " << tgt->getName() << "\n";
   }
 
-  void IfzQuad::codegenX64(std::ostream &out) { 
-    out<<"# IfzQuad\n";
-    getCnd()->genLoadVal(out,C);
-    out<<"cmpq $0, %rcx\n";
-    out<<"je " << getTarget()->getName() << "\n";
-    out<<"# End IfzQuad\n";
+  void IfzQuad::codegenX64(std::ostream &out)
+  {
+    getCnd()->genLoadVal(out, C);
+    out << "cmpq $0, %rcx\n";
+    out << "je " << getTarget()->getName() << "\n";
   }
 
   void NopQuad::codegenX64(std::ostream &out) { out << "nop" << "\n"; }
 
-  void CallQuad::codegenX64(std::ostream &out) {
+  void CallQuad::codegenX64(std::ostream &out)
+  {
     out << "callq fun_" << sym->getName() << "\n";
+    int stackneeded = (numArgs > 6) ? (numArgs - 6) * 8 : 0;
+    if (stackneeded > 0){
+      out << "addq $" << stackneeded << ", %rsp\n";
+    }
   }
 
   void EnterQuad::codegenX64(std::ostream &out)
@@ -331,93 +333,95 @@ namespace leviathan
     out << "retq\n";
   }
 
-  void SetArgQuad::codegenX64(std::ostream &out) { 
-    std::cout<<"Generating SetArgQuad for index "<<getIndex()<<"\n";
+  void SetArgQuad::codegenX64(std::ostream &out)
+  {
     switch (getIndex())
     {
     case 1:
-      if(getSrc()->isLiteral())
+      if (getSrc()->isLiteral())
       {
-        out<<getSrc()->getMovOp()<<" $"<< getSrc()->valString() << ", %rdi\n";
+        out << getSrc()->getMovOp() << " $" << getSrc()->valString() << ", %rdi\n";
         break;
       }
-      out<<getSrc()->getMovOp()<<" " << getSrc()->getMemoryLoc() << ", %rdi\n";
+      out << getSrc()->getMovOp() << " " << getSrc()->getMemoryLoc() << ", %rdi\n";
       break;
     case 2:
-      if(getSrc()->isLiteral())
+      if (getSrc()->isLiteral())
       {
-        out<<getSrc()->getMovOp()<<" $"<< getSrc()->valString() << ", %rsi\n";
+        out << getSrc()->getMovOp() << " $" << getSrc()->valString() << ", %rsi\n";
         break;
       }
-      out<<getSrc()->getMovOp()<<" " << getSrc()->getMemoryLoc() << ", %rsi\n";
+      out << getSrc()->getMovOp() << " " << getSrc()->getMemoryLoc() << ", %rsi\n";
       break;
     case 3:
-      if(getSrc()->isLiteral())
+      if (getSrc()->isLiteral())
       {
-        out<<getSrc()->getMovOp()<<" $"<< getSrc()->valString() << ", %rdx\n";
+        out << getSrc()->getMovOp() << " $" << getSrc()->valString() << ", %rdx\n";
         break;
       }
-      out<<getSrc()->getMovOp()<<" " << getSrc()->getMemoryLoc() << ", %rdx\n";
+      out << getSrc()->getMovOp() << " " << getSrc()->getMemoryLoc() << ", %rdx\n";
       break;
     case 4:
-      if(getSrc()->isLiteral())
+      if (getSrc()->isLiteral())
       {
-        out<<getSrc()->getMovOp()<<" $"<< getSrc()->valString() << ", %rcx\n";
+        out << getSrc()->getMovOp() << " $" << getSrc()->valString() << ", %rcx\n";
         break;
       }
-      out<<getSrc()->getMovOp()<<" " << getSrc()->getMemoryLoc() << ", %rcx\n";
+      out << getSrc()->getMovOp() << " " << getSrc()->getMemoryLoc() << ", %rcx\n";
       break;
     case 5:
-      if(getSrc()->isLiteral())
+      if (getSrc()->isLiteral())
       {
-        out<<getSrc()->getMovOp()<<" $"<< getSrc()->valString() << ", %r08\n";
+        out << getSrc()->getMovOp() << " $" << getSrc()->valString() << ", %r8\n";
         break;
       }
-      out<<getSrc()->getMovOp()<<" " << getSrc()->getMemoryLoc() << ", %r08\n";
+      out << getSrc()->getMovOp() << " " << getSrc()->getMemoryLoc() << ", %r8\n";
       break;
     case 6:
-      if(getSrc()->isLiteral())
+      if (getSrc()->isLiteral())
       {
-        out<<getSrc()->getMovOp()<<" $"<< getSrc()->valString() << ", %r09\n";
+        out << getSrc()->getMovOp() << " $" << getSrc()->valString() << ", %r9\n";
         break;
       }
-      out<<getSrc()->getMovOp()<<" " << getSrc()->getMemoryLoc() << ", %r09\n";
+      out << getSrc()->getMovOp() << " " << getSrc()->getMemoryLoc() << ", %r9\n";
       break;
-    
+
     default:
-      getSrc()->genLoadVal(out,A);
-      out<<"pushq %rax\n";
+      getSrc()->genLoadVal(out, A);
+      out << "pushq %rax\n";
       break;
     }
-   }
+  }
 
-  void GetArgQuad::codegenX64(std::ostream &out) {
-    std::cout<<"Generating GetArgQuad for index "<<getIndex()<<"\n";
-     switch (getIndex())
-     {
-     case 1:
-      out<<opd->getMovOp()<<" %rdi, " << opd->getMemoryLoc() << "\n";
+  void GetArgQuad::codegenX64(std::ostream &out)
+  {
+    switch (getIndex())
+    {
+    case 1:
+      out << opd->getMovOp() << " %rdi, " << opd->getMemoryLoc() << "\n";
       break;
-      case 2:
-      out<<opd->getMovOp()<<" %rsi, " << opd->getMemoryLoc() << "\n";
+    case 2:
+      out << opd->getMovOp() << " %rsi, " << opd->getMemoryLoc() << "\n";
       break;
-      case 3:
-      out<<opd->getMovOp()<<" %rdx, " << opd->getMemoryLoc() << "\n";
+    case 3:
+      out << opd->getMovOp() << " %rdx, " << opd->getMemoryLoc() << "\n";
       break;
-      case 4:
-      out<<opd->getMovOp()<<" %rcx, " << opd->getMemoryLoc() << "\n";
+    case 4:
+      out << opd->getMovOp() << " %rcx, " << opd->getMemoryLoc() << "\n";
       break;
-      case 5:
-      out<<opd->getMovOp()<<" %r08, " << opd->getMemoryLoc() << "\n";
+    case 5:
+      out << opd->getMovOp() << " %r8, " << opd->getMemoryLoc() << "\n";
       break;
-      case 6:
-      out<<opd->getMovOp()<<" %r09, " << opd->getMemoryLoc() << "\n";
+    case 6:
+      out << opd->getMovOp() << " %r9, " << opd->getMemoryLoc() << "\n";
       break;
-     
-     default:
-      break;
-     }    
 
+    default:
+    out<<opd->getMovOp()<<" "<< (8 * (numArgs - getIndex())) << "(%rbp), %rbx\n"; 
+    out<<opd->getMovOp()<<" %rbx, " << opd->getMemoryLoc() << "\n";
+
+      break;
+    }
   }
 
   void SetRetQuad::codegenX64(std::ostream &out) { TODO(Implement me) }
@@ -441,13 +445,14 @@ namespace leviathan
     TODO(Implement me if necessary)
   }
 
-  void AuxOpd::genLoadVal(std::ostream &out, Register reg) { 
-    out<< getMovOp() << " " << getMemoryLoc() << ", " << getReg(reg) << "\n"; 
-  
+  void AuxOpd::genLoadVal(std::ostream &out, Register reg)
+  {
+    out << getMovOp() << " " << getMemoryLoc() << ", " << getReg(reg) << "\n";
   }
 
-  void AuxOpd::genStoreVal(std::ostream &out, Register reg) { 
-    out<< getMovOp() << " " << getReg(reg) << ", " << getMemoryLoc() << "\n";
+  void AuxOpd::genStoreVal(std::ostream &out, Register reg)
+  {
+    out << getMovOp() << " " << getReg(reg) << ", " << getMemoryLoc() << "\n";
   }
   void AuxOpd::genLoadAddr(std::ostream &out, Register reg) { TODO(Implement me) }
 

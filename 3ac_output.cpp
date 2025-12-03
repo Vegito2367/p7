@@ -20,7 +20,7 @@ static void formalsTo3AC(Procedure *proc,
     SemSymbol *sym = formal->ID()->getSymbol();
     SymOpd *opd = proc->getSymOpd(sym);
 
-    Quad *inQuad = new GetArgQuad(argIdx, opd);
+    Quad *inQuad = new GetArgQuad(argIdx, opd, proc->getFormals().size());
     proc->addQuad(inQuad);
     argIdx += 1;
   }
@@ -103,7 +103,7 @@ Opd *CallExpNode::flatten(Procedure *proc) {
   argsTo3AC(proc, myArgs);
 
   SemSymbol *idSym = myCallee->getSymbol();
-  Quad *callQuad = new CallQuad(idSym);
+  Quad *callQuad = new CallQuad(idSym, myArgs->size());
   proc->addQuad(callQuad);
 
   const FnType *calleeType = idSym->getDataType()->asFn();
@@ -348,7 +348,7 @@ void PostIncStmtNode::to3AC(Procedure *proc) {
 
 Opd *ThrashNode::flatten(Procedure *proc) {
   SemSymbol *randBool = proc->getProg()->getRandSym();
-  proc->addQuad(new CallQuad(randBool));
+  proc->addQuad(new CallQuad(randBool,1));
 
   Opd *resVal = proc->makeTmp(Opd::width(BasicType::BOOL()));
   proc->addQuad(new GetRetQuad(resVal));

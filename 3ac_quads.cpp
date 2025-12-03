@@ -52,8 +52,8 @@ std::string Quad::toString(bool verbose){
 	return res;
 }
 
-CallQuad::CallQuad(SemSymbol * calleeIn)
-: sym(calleeIn){ }
+CallQuad::CallQuad(SemSymbol * calleeIn, int numArgsIn)
+: sym(calleeIn), numArgs(numArgsIn) { }
 
 std::string CallQuad::repr(){
 	return "call " + sym->getName();
@@ -219,8 +219,8 @@ std::string SetArgQuad::repr(){
 	return res;
 }
 
-GetArgQuad::GetArgQuad(size_t indexIn, Opd * opdIn)
-: index(indexIn), opd(opdIn){
+GetArgQuad::GetArgQuad(size_t indexIn, Opd * opdIn, size_t numArgsIn)
+: index(indexIn), opd(opdIn), numArgs(numArgsIn){
 }
 
 std::string GetArgQuad::repr(){
