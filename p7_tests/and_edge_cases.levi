@@ -1,0 +1,81 @@
+main : () int {
+  rb1:bool;
+  rb2:bool;
+  rbool:bool;
+
+  rb1 = true; rb2 = true;
+  rbool = (rb1 == rb2 and rb2 == rb1);
+  out << rbool; out << "\n";
+  rbool = (rb1 == rb2 and rb2 != rb1);
+  out << rbool; out << "\n";
+  rbool = (rb1 != rb2 and rb2 == rb1);
+  out << rbool; out << "\n";
+  rbool = (rb1 != rb2 and rb2 != rb1);
+  out << rbool; out << "\n";
+
+  rbool = (rb1 == rb2 or rb2 == rb1);
+  out << rbool; out << "\n";
+  rbool = (rb1 == rb2 or rb2 != rb1);
+  out << rbool; out << "\n";
+  rbool = (rb1 != rb2 or rb2 == rb1);
+  out << rbool; out << "\n";
+  rbool = (rb1 != rb2 or rb2 != rb1);
+  out << rbool; out << "\n";
+
+  rb1 = true; rb2 = false;
+  rbool = (rb1 == rb2 and rb2 == rb1);
+  out << rbool; out << "\n";
+  rbool = (rb1 == rb2 and rb2 != rb1);
+  out << rbool; out << "\n";
+  rbool = (rb1 != rb2 and rb2 == rb1);
+  out << rbool; out << "\n";
+  rbool = (rb1 != rb2 and rb2 != rb1);
+  out << rbool; out << "\n";
+
+  rbool = (rb1 == rb2 or rb2 == rb1);
+  out << rbool; out << "\n";
+  rbool = (rb1 == rb2 or rb2 != rb1);
+  out << rbool; out << "\n";
+  rbool = (rb1 != rb2 or rb2 == rb1);
+  out << rbool; out << "\n";
+  rbool = (rb1 != rb2 or rb2 != rb1);
+  out << rbool; out << "\n";
+
+  rb1 = false; rb2 = false;
+  rbool = (rb1 == rb2 and rb2 == rb1);
+  out << rbool; out << "\n";
+  rbool = (rb1 == rb2 and rb2 != rb1);
+  out << rbool; out << "\n";
+  rbool = (rb1 != rb2 and rb2 == rb1);
+  out << rbool; out << "\n";
+  rbool = (rb1 != rb2 and rb2 != rb1);
+  out << rbool; out << "\n";
+
+  rbool = (rb1 == rb2 or rb2 == rb1);
+  out << rbool; out << "\n";
+  rbool = (rb1 == rb2 or rb2 != rb1);
+  out << rbool; out << "\n";
+  rbool = (rb1 != rb2 or rb2 == rb1);
+  out << rbool; out << "\n";
+  rbool = (rb1 != rb2 or rb2 != rb1);
+  out << rbool; out << "\n";
+
+  rb1 = false; rb2 = true;
+  rbool = (rb1 == rb2 and rb2 == rb1);
+  out << rbool; out << "\n";
+  rbool = (rb1 == rb2 and rb2 != rb1);
+  out << rbool; out << "\n";
+  rbool = (rb1 != rb2 and rb2 == rb1);
+  out << rbool; out << "\n";
+  rbool = (rb1 != rb2 and rb2 != rb1);
+  out << rbool; out << "\n";
+
+  rbool = (rb1 == rb2 or rb2 == rb1);
+  out << rbool; out << "\n";
+  rbool = (rb1 == rb2 or rb2 != rb1);
+  out << rbool; out << "\n";
+  rbool = (rb1 != rb2 or rb2 == rb1);
+  out << rbool; out << "\n";
+  rbool = (rb1 != rb2 or rb2 != rb1);
+  out << rbool; out << "\n";
+}

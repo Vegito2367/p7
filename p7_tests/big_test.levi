@@ -26,23 +26,24 @@ main : () int {
   out << "\n";
 
   rb1 = true;
-  rb2 = false;
+  rb2 = true;
+  rb3:bool;
+  rb3 = false;
 
-  rbool = (rb1 == rb2);
-  out << rbool;
-  out << "\n";
+  rbool = (rb1 == rb2 and rb2 == rb3);
+  out << rbool; out << "\n";
 
-  rbool = (!rb2);
-  out << rbool;
-  out << "\n";
+  rbool = (rb1 == rb2 and rb2 == rb1);
+  out << rbool; out << "\n";
 
-  rbool = (rb1 or rb2);
-  out << rbool;
-  out << "\n";
+  rbool = (!rb3);
+  out << rbool; out << "\n";
 
-  rbool = (rb1 and rb2);
-  out << rbool;
-  out << "\n";
+  rbool = (rb1 or rb3);
+  out << rbool; out << "\n";
+
+  rbool = (rb1 and rb3);
+  out << rbool; out << "\n";
 
   out << "Read test:\n";
   in >> x;
