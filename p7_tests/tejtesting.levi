@@ -1,0 +1,36 @@
+
+f1: () bool {
+    a: bool;
+    b: bool;
+    a=true;
+    b=false;
+
+    return a and b;
+  }
+main :() void {
+    b:bool;
+    a:bool;
+    c:bool;
+
+    a=true;
+    b=false;
+    c=true;
+    
+    res1:bool;
+    res2:bool;
+    res3:bool;
+    res4:bool;
+
+    res1 = a and b;
+    res2 = b or c;
+    res3 = res1 and res2;
+    res4 = res3 and f1();
+    out<<res1;
+    out<<"\n";
+    out<<res2;
+    out<<"\n";
+    out<<res3;
+    out<<"\n";
+    out<<res4;
+
+  } 
